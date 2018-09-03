@@ -61,7 +61,7 @@ class RippleRPCClient(object):
             destination_account=destination_account,
             ledger_index=ledger_index
         )
-        return self._call('account_lines', params)
+        return self._call('account_channels', params)
 
     def account_currencies(self, account: str, account_index=0, ledger_index="validated", strict=True) -> dict:
         """
@@ -128,17 +128,6 @@ class RippleRPCClient(object):
         )
         return self._call('gateway_balances', params)
 
-    def tx(self, tx: str, binary=False) -> dict:
-        """
-        Method retrieves information on a single transaction
-        Reference: https://developers.ripple.com/tx.html
-        """
-        params = dict(
-            transaction=tx,
-            binary=binary
-        )
-        return self._call('tx', params)
-
     def noripple_check(self, account: str, ledger_index='current', limit=2, role="gateway", transactions=True) -> dict:
         """
         Method provides a quick way to check the status of the DefaultRipple field for an account and
@@ -153,6 +142,17 @@ class RippleRPCClient(object):
             transactions=transactions
         )
         return self._call('noripple_check', params)
+
+    def tx(self, tx: str, binary=False) -> dict:
+        """
+        Method retrieves information on a single transaction
+        Reference: https://developers.ripple.com/tx.html
+        """
+        params = dict(
+            transaction=tx,
+            binary=binary
+        )
+        return self._call('tx', params)
 
     def ping(self) -> dict:
         """
