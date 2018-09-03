@@ -24,7 +24,7 @@ class RippleRPCClient(object):
         res = requests.post(self.node, json=payload)
         if res.status_code == 200 and res.json().get('result'):
             return res.json().get('result')
-        return {"txt": res.text(), "status_code": res.status_code}
+        return {"txt": res.text, "status_code": res.status_code}
 
     def account_info(self, account: str, strict=True, ledger_index='current', queue=True) -> dict:
         """
@@ -77,7 +77,12 @@ class RippleRPCClient(object):
         )
         return self._call('account_currencies', params)
 
-    def account_objects(self, account, ledger_index="validated", limit=10, type="state"):
+    def account_objects(self, account: str, ledger_index="validated", limit=10, type="state") -> dict:
+        """
+        Method returns the raw ledger format for all objects owned by an account.
+        For a higher-level view of an account's trust lines and balances, see the account_lines method instead.
+        Reference: https://developers.ripple.com/account_objects.html
+        """
         params = dict(
             account=account,
             ledger_index=ledger_index,
@@ -86,10 +91,19 @@ class RippleRPCClient(object):
         )
         return self._call('account_objects', params)
 
-    def account_offers(self, account):
+    def account_offers(self, account: str) -> dict:
+        """
+         Method retrieves a list of offers made by a given account that are outstanding as of a particular ledger version.
+         Reference: https://developers.ripple.com/account_offers.html
+        """
         return self._call('account_offers', params=dict(account=account))
 
-    def account_tx(self, account, binary=False, forward=False, ledger_index_max=-1, ledger_index_min=-1, limit=2):
+    def account_tx(self, account: str, binary=False, forward=False,
+                   ledger_index_max=-1, ledger_index_min=-1, limit=2) -> dict:
+        """
+        Method retrieves a list of transactions that involved the specified account.
+        Reference: https://developers.ripple.com/account_tx.html
+        """
         params = dict(
             account=account,
             binary=binary,
@@ -100,7 +114,11 @@ class RippleRPCClient(object):
         )
         return self._call('account_tx', params)
 
-    def gateway_balances(self, account, hotwallet=None, ledger_index="validated", strict=True):
+    def gateway_balances(self, account: str, hotwallet=None, ledger_index="validated", strict=True) -> dict:
+        """
+        Method calculates the total balances issued by a given account, optionally excluding amounts held by operational addresses.
+        Reference:https://developers.ripple.com/gateway_balances.html
+        """
         hotwallet = [] if None else hotwallet
         params = dict(
             account=account,
@@ -110,14 +128,23 @@ class RippleRPCClient(object):
         )
         return self._call('gateway_balances', params)
 
-    def tx(self, tx, binary=False):
+    def tx(self, tx: str, binary=False) -> dict:
+        """
+        Method retrieves information on a single transaction
+        Reference: https://developers.ripple.com/tx.html
+        """
         params = dict(
             transaction=tx,
             binary=binary
         )
         return self._call('tx', params)
 
-    def norriple_check(self, account, ledger_index='current', limit=2, role="gateway", transactions=True):
+    def noripple_check(self, account: str, ledger_index='current', limit=2, role="gateway", transactions=True) -> dict:
+        """
+        Method provides a quick way to check the status of the DefaultRipple field for an account and
+        the NoRipple flag of its trust lines, compared with the recommended settings.
+        Reference: https://developers.ripple.com/noripple_check.html
+        """
         params = dict(
             account=account,
             ledger_index=ledger_index,
@@ -127,9 +154,15 @@ class RippleRPCClient(object):
         )
         return self._call('noripple_check', params)
 
-    def ping(self):
+    def ping(self) -> dict:
+        """
+        Method returns an acknowledgement, so that clients can test the connection status and latency.
+        Reference: https://developers.ripple.com/ping.html
+        """
         return self._call('ping', params=dict())
 
 
 if __name__ == '__main__':
-    xrp_rpc = RippleRPCClient('http://localhost:5005/', 'testnet')
+    test_address = 'r9cZA1mLK5R5Am25ArfXFmqgNwjZgnfk59'
+    rpc = RippleRPCClient('http://s1.ripple.com:51234/', 'testnet')
+    print(rpc.noripple_check(test_address))
