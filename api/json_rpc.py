@@ -291,7 +291,7 @@ class RippleRPCClient(object):
         return self._call('book_offers', params)
 
     def ripple_path_find(self, destination_account: str, currency: str, issuer: str, value: str, source_account: str,
-                         source_currencies: list=None):
+                         source_currencies: list=None) -> dict:
         """
         The ripple_path_find method is a simplified version of the path_find method that provides
         a single response with a payment path you can use right away. It is available in both the WebSocket
@@ -313,6 +313,45 @@ class RippleRPCClient(object):
         )
         return self._call('ripple_path_find', params)
 
+    # TODO: implement channel_authorize and channel_verify on local node
+    def channel_authorize(self, channel_id: str, secret: str, amount: str) -> dict:
+        """
+        Method creates a signature that can be used to redeem a specific amount of XRP from a payment channel.
+        Reference: https://developers.ripple.com/channel_authorize.html#main_content_body
+        """
+        return NotImplemented
+
+    def channel_verify(self, channel_id: str, signature: str, public_key: str, amount: str) -> dict:
+        """
+        Method checks the validity of a signature that can be used to redeem a specific amount of XRP
+        from a payment channel.
+        Reference: https://developers.ripple.com/channel_verify.html
+        """
+        return NotImplemented
+
+    def fee(self) -> dict:
+        """
+        Method reports the current state of the open-ledger requirements for the transaction cost.
+        This requires the FeeEscalation amendment to be enabled.
+        Reference: https://developers.ripple.com/fee.html
+        """
+        return self._call('fee', params=dict())
+
+    def server_info(self) -> dict:
+        """
+        Method asks the server for a human-readable version of various information
+         about the rippled server being queried.
+        Reference: https://developers.ripple.com/server_info.html
+        """
+        return self._call('server_info', params=dict())
+
+    def server_state(self) -> dict:
+        """
+        Method asks the server for various machine-readable information about the rippled server's current state.
+        Same as server_info method, but more readable.
+        Reference: https://developers.ripple.com/server_state.html
+        """
+        return self._call('server_state', params=dict())
 
     def ping(self) -> dict:
         """
@@ -320,6 +359,13 @@ class RippleRPCClient(object):
         Reference: https://developers.ripple.com/ping.html
         """
         return self._call('ping', params=dict())
+
+    def random(self) -> dict:
+        """
+        Method provides a random number to be used as a source of entropy for random number generation by clients.
+        Reference: https://developers.ripple.com/random.html
+        """
+        return self._call('random', params=dict())
 
 
 if __name__ == '__main__':
