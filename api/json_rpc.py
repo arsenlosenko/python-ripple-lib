@@ -1,5 +1,5 @@
 import json
-import urllib3
+from urllib.request import Request, urlopen
 
 
 class RippleRPCClient(object):
@@ -16,19 +16,19 @@ class RippleRPCClient(object):
         :param method: JSON-RPC method of rippled
         :param params: parameters of the request
         """
-        http = urllib3.PoolManager()
         payload = json.dumps({
             "method": method,
             "params": [
                 params
             ]
         }).encode('utf-8')
-        res = http.request('POST', self.node,
-                           body=payload, headers={'Content-Type': 'application/json'})
-        res_json = json.loads(res.data.decode('utf-8'))
-        if res.status == 200 and res_json.get('result'):
-            return res_json.get('result')
-        return res_json
+        req = Request(method='POST', url=self.node,
+                      data=payload, headers={'Content-Type': 'application/json'})
+        with urlopen(req) as res:
+            res_json = json.loads(res.fp.read().decode('utf-8'))
+            if res.status == 200 and res_json.get('result'):
+                return res_json.get('result')
+            return res_json
 
     def account_info(self, account: str, strict: bool=True, ledger_index: str='current', queue: bool=True) -> dict:
         """
@@ -371,4 +371,4 @@ class RippleRPCClient(object):
 if __name__ == '__main__':
     test_address = 'r9cZA1mLK5R5Am25ArfXFmqgNwjZgnfk59'
     rpc = RippleRPCClient('http://s1.ripple.com:51234/', 'testnet')
-    print(rpc.noripple_check(test_address))
+    print(rpc.server_info())
