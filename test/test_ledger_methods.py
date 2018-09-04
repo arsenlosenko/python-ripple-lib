@@ -5,7 +5,6 @@ class TestLedgerMethods(BaseTestClass):
 
     def test_ledger(self):
         info = self.rpc.ledger()
-        print(info)
         self.assertTrue(info['validated'])
         self.assertIn('ledger', info)
 

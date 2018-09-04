@@ -1,4 +1,5 @@
-import requests
+import json
+import urllib3
 
 
 class RippleRPCClient(object):
@@ -15,16 +16,19 @@ class RippleRPCClient(object):
         :param method: JSON-RPC method of rippled
         :param params: parameters of the request
         """
-        payload = {
+        http = urllib3.PoolManager()
+        payload = json.dumps({
             "method": method,
             "params": [
                 params
             ]
-        }
-        res = requests.post(self.node, json=payload)
-        if res.status_code == 200 and res.json().get('result'):
-            return res.json().get('result')
-        return {"txt": res.text, "status_code": res.status_code}
+        }).encode('utf-8')
+        res = http.request('POST', self.node,
+                           body=payload, headers={'Content-Type': 'application/json'})
+        res_json = json.loads(res.data.decode('utf-8'))
+        if res.status == 200 and res_json.get('result'):
+            return res_json.get('result')
+        return res_json
 
     def account_info(self, account: str, strict: bool=True, ledger_index: str='current', queue: bool=True) -> dict:
         """
