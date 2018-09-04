@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name='python-ripple-rpc',
+    name='python_ripple_rpc',
     version='1.0',
     packages=['api', 'test'],
     url='https://github.com/arsenlosenko/python-ripple-rpc',
