@@ -1,16 +1,7 @@
-import unittest
-
-from api.json_rpc import RippleRPCClient
+from test import BaseTestClass
 
 
-class TestAccountMethods(unittest.TestCase):
-
-    @classmethod
-    def setUpClass(cls):
-        cls.rpc = RippleRPCClient('http://s1.ripple.com:51234/', 'testnet')
-        cls.valid_address = 'r9cZA1mLK5R5Am25ArfXFmqgNwjZgnfk59'
-        cls.invalid_long_address = 'r9cZA1mLK5R5Am25ArfXFmqgNwjZgnfk591313'
-        cls.invalid_address = '19cZA1mLK5R5Am25ArfXFmqgNwjZgnfk59'
+class TestAccountMethods(BaseTestClass):
 
     def test_account_info(self):
         info = self.rpc.account_info(self.valid_address)
@@ -112,7 +103,3 @@ class TestAccountMethods(unittest.TestCase):
     def test_incorrect_noripple_check(self):
         info = self.rpc.noripple_check(self.invalid_address)
         self.assertIn('error', info)
-
-        
-if __name__ == '__main__':
-    unittest.main()

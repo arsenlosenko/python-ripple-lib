@@ -143,6 +143,63 @@ class RippleRPCClient(object):
         )
         return self._call('noripple_check', params)
 
+    def ledger(self, ledger_index='validated', accounts=False, full=False,
+               transactions=False, expand=False, owner_funds=False) -> dict:
+        """
+        Retrieve information about the public ledger.
+        Reference: https://developers.ripple.com/ledger.html
+        """
+        params = dict(
+            ledger_index=ledger_index,
+            accounts=accounts,
+            full=full,
+            transactions=transactions,
+            expand=expand,
+            owner_funds=owner_funds
+        )
+        return self._call('ledger', params)
+
+    def ledger_closed(self) -> dict:
+        """
+        Method returns the unique identifiers of the most recently closed ledger.
+        (This ledger is not necessarily validated and immutable yet.)
+        Reference: https://developers.ripple.com/ledger_closed.html
+        """
+        return self._call('ledger_closed', params=dict())
+
+    def ledger_current(self) -> dict:
+        """
+        Method returns the unique identifiers of the current in-progress ledger.
+        This command is mostly useful for testing, because the ledger returned is still in flux.
+        Reference: https://developers.ripple.com/ledger_current.html
+        """
+        return self._call('ledger_current', params=dict())
+
+    def ledger_data(self, ledger_hash: str, binary=True, limit=5) -> dict:
+        """
+        Method retrieves contents of the specified ledger. You can iterate through several calls to retrieve the entire contents of a single ledger version.
+        Reference: https://developers.ripple.com/ledger_data.html
+        """
+        params = dict(
+            ledger_hash=ledger_hash,
+            binary=binary,
+            limit=limit
+        )
+        return self._call('ledger_data', params)
+
+    def ledger_entry(self, account_root: str, ledger_index="validated", type="account_root") -> dict:
+        """
+        Method returns a single ledger object from the XRP Ledger in its raw format.
+        See ledger format for information on the different types of objects you can retrieve.
+        Reference: https://developers.ripple.com/ledger_entry.html
+        """
+        params = dict(
+            account_root=account_root,
+            ledger_index=ledger_index,
+            type=type
+        )
+        return self._call('ledger_entry', params)
+
     def tx(self, tx: str, binary=False) -> dict:
         """
         Method retrieves information on a single transaction
