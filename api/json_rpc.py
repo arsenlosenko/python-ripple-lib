@@ -269,6 +269,51 @@ class RippleRPCClient(object):
         """
         return self._call('tx_history', params=dict(start=start))
 
+    def book_offers(self, taker: str, issuer: str,
+                    taker_gets_currency: str="XRP", taker_pays_currency: str="USD", limit: int=10) -> dict:
+        """
+        Method retrieves a list of offers, also known as the order book, between two currencies.
+        If the results are very large, a partial result is returned with a marker so that later requests
+        can resume from where the previous one left off.
+        Reference: https://developers.ripple.com/book_offers.html
+        """
+        params = dict(
+            taker=taker,
+            taker_gets=dict(
+                currency=taker_gets_currency
+            ),
+            taker_pays=dict(
+                currency=taker_pays_currency,
+                issuer=issuer
+            ),
+            limit=limit
+        )
+        return self._call('book_offers', params)
+
+    def ripple_path_find(self, destination_account: str, currency: str, issuer: str, value: str, source_account: str,
+                         source_currencies: list=None):
+        """
+        The ripple_path_find method is a simplified version of the path_find method that provides
+        a single response with a payment path you can use right away. It is available in both the WebSocket
+        and JSON-RPC APIs. However, the results tend to become outdated as time passes.
+        Instead of making multiple calls to stay updated, you should instead use the path_find method
+        to subscribe to continued updates where possible.
+        Reference: https://developers.ripple.com/ripple_path_find.html
+        """
+        source_currencies = [] if source_currencies is None else source_currencies
+        params = dict(
+            destination_account=destination_account,
+            destination_amount=dict(
+                currency=currency,
+                issuer=issuer,
+                value=value
+            ),
+            source_account=source_account,
+            source_currencies=[dict(currency=currency) for currency in source_currencies]
+        )
+        return self._call('ripple_path_find', params)
+
+
     def ping(self) -> dict:
         """
         Method returns an acknowledgement, so that clients can test the connection status and latency.
