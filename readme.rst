@@ -26,6 +26,7 @@ API Methods
 ------------
 
 This client supports either public or admin JSON-RPC methods only (some of the node requests can be only via Websocket API or using CLI):
+Methods that are work in progress marked with (WIP)
 
 * `Public methods <https://developers.ripple.com/public-rippled-methods.html>`_
     * `Account Methods <https://developers.ripple.com/account-methods.html>`_
@@ -38,5 +39,19 @@ This client supports either public or admin JSON-RPC methods only (some of the n
         * `account_tx <https://developers.ripple.com/account_tx.html>`_
         * `gateway_balances <https://developers.ripple.com/gateway_balances.html>`_
         * `no_ripple_check <https://developers.ripple.com/gateway_balances.html>`_
+    * `Ledger Methods <https://developers.ripple.com/ledger-methods.html>`_
+        * `ledger <https://developers.ripple.com/ledger.html>`_
+        * `ledger_closed <https://developers.ripple.com/ledger_closed.html>`_
+        * `ledger_current <https://developers.ripple.com/ledger_current.html>`_
+        * `ledger_data <https://developers.ripple.com/ledger_data.html>`_
+        * `ledger_entry <https://developers.ripple.com/ledger_entry.html>`_
+    * `Transaction Methods <https://developers.ripple.com/transaction-methods.html>`_
+        * `sign <https://developers.ripple.com/sign.html>`_ (WIP)
+        * `sign_for <https://developers.ripple.com/sign_for.html>`_ (WIP)
+        * `submit <https://developers.ripple.com/submit.html>`_ (WIP)
+        * `submit_multisigned <https://developers.ripple.com/submit_multisigned.html>`_ (WIP)
+        * `transaction_entry <https://developers.ripple.com/transaction_entry.html>`_
+        * `tx <https://developers.ripple.com/tx.html>`_
+        * `tx_history <https://developers.ripple.com/tx_history.html>`_
 
 
