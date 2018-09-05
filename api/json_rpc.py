@@ -1,15 +1,14 @@
 import json
 from urllib.request import Request, urlopen
+from urllib.error import HTTPError
 
 
 class RippleRPCClient(object):
-    def __init__(self, node: str, chain: str):
+    def __init__(self, node: str):
         """
         :param node: URL of rippled node
-        :param chain: chain (mainnet or testnet) that node is connected to
         """
         self.node = node
-        self.chain = chain
 
     def _call(self, method: str, params: dict) -> dict:
         """Base method which sends requests to node
@@ -24,11 +23,18 @@ class RippleRPCClient(object):
         }).encode('utf-8')
         req = Request(method='POST', url=self.node,
                       data=payload, headers={'Content-Type': 'application/json'})
-        with urlopen(req) as res:
-            res_json = json.loads(res.fp.read().decode('utf-8'))
-            if res.status == 200 and res_json.get('result'):
-                return res_json.get('result')
-            return res_json
+        try:
+            with urlopen(req) as res:
+                res_json = json.loads(res.fp.read().decode('utf-8'))
+                if res.status == 200 and res_json.get('result'):
+                    return res_json.get('result')
+                return res_json
+        except HTTPError as err:
+            if err.code == 403:
+                return {"status": "error",
+                        "error": err,
+                        "text": "Admin methods are only allowed on nodes with admin access."}
+            return {"status": "error", "error": err}
 
     def account_info(self, account: str, strict: bool=True, ledger_index: str='current', queue: bool=True) -> dict:
         """
@@ -67,7 +73,8 @@ class RippleRPCClient(object):
         )
         return self._call('account_channels', params)
 
-    def account_currencies(self, account: str, account_index: int=0, ledger_index: str="validated", strict: bool=True) -> dict:
+    def account_currencies(self, account: str, account_index: int=0,
+                           ledger_index: str="validated", strict: bool=True) -> dict:
         """
         Method retrieves a list of currencies that an account can send or receive, based on its trust lines.
         (This is not a thoroughly confirmed list, but it can be used to populate user interfaces.)
@@ -97,7 +104,8 @@ class RippleRPCClient(object):
 
     def account_offers(self, account: str) -> dict:
         """
-         Method retrieves a list of offers made by a given account that are outstanding as of a particular ledger version.
+         Method retrieves a list of offers made by a given account that are outstanding
+         as of a particular ledger version.
          Reference: https://developers.ripple.com/account_offers.html
         """
         return self._call('account_offers', params=dict(account=account))
@@ -120,7 +128,8 @@ class RippleRPCClient(object):
 
     def gateway_balances(self, account: str, hotwallet: list=None, ledger_index: str="validated", strict: bool=True) -> dict:
         """
-        Method calculates the total balances issued by a given account, optionally excluding amounts held by operational addresses.
+        Method calculates the total balances issued by a given account, optionally excluding amounts held by
+        operational addresses.
         Reference:https://developers.ripple.com/gateway_balances.html
         """
         hotwallet = [] if None else hotwallet
@@ -182,7 +191,8 @@ class RippleRPCClient(object):
 
     def ledger_data(self, ledger_hash: str, binary: bool=True, limit: int=5) -> dict:
         """
-        Method retrieves contents of the specified ledger. You can iterate through several calls to retrieve the entire contents of a single ledger version.
+        Method retrieves contents of the specified ledger. You can iterate through several calls to retrieve the entire
+        contents of a single ledger version.
         Reference: https://developers.ripple.com/ledger_data.html
         """
         params = dict(
@@ -367,8 +377,135 @@ class RippleRPCClient(object):
         """
         return self._call('random', params=dict())
 
+    def validation_create(self, secret: str) -> dict:
+        """
+        Method generates the keys for a rippled validator.
+        Similar to the wallet_propose method, this command makes no real changes,
+        but only generates a set of keys in the proper format.
+        This request is an admin method that cannot be run by unprivileged users!
+        Reference: https://developers.ripple.com/validation_create.html
+        """
+        return self._call('validation_create', params=dict(secret=secret))
+
+    def wallet_propose(self, seed: str, key: str="secp256k1") -> dict:
+        """
+        Method to generate a key pair and XRP Ledger address.
+        This command only generates key and address values, and does not affect the XRP Ledger itself in any way.
+        This request is an admin method that cannot be run by unprivileged users!
+        Reference: https://developers.ripple.com/wallet_propose.html
+        """
+        params = dict(
+            seed=seed,
+            key=key
+        )
+        return self._call('wallet_propose', params)
+
+    def can_delete(self, can_delete: int) -> dict:
+        # TODO: implement needed config to test the method
+        """
+        With online_delete and advisory_delete configuration options enabled, the can_delete method
+        informs the rippled server of the latest ledger which may be deleted.
+        This request is an admin method that cannot be run by unprivileged users!
+        Reference: https://developers.ripple.com/can_delete.html
+        """
+        return self._call('can_delete', params=dict(can_delete=can_delete))
+
+    def connect(self, ip: str, port: int=6561) -> dict:
+        """
+        Method forces the rippled server to connect to a specific peer rippled server.
+        This request is an admin method that cannot be run by unprivileged users!
+        Reference: https://developers.ripple.com/connect.html
+        """
+        params = dict(
+            ip=ip,
+            port=port
+        )
+        return self._call('connect', params)
+
+    def stop(self) -> dict:
+        """
+        Method gracefully shuts down the server.
+        This request is an admin method that cannot be run by unprivileged users!
+        Reference: https://developers.ripple.com/stop.html
+        """
+        return self._call('stop', params=dict())
+
+    def consensus_info(self) -> dict:
+        """
+        Method provides information about the consensus process for debugging purposes.
+        This request is an admin method that cannot be run by unprivileged users
+        Reference: https://developers.ripple.com/consensus_info.html
+        """
+        return self._call('consensus_info', params=dict())
+
+    def feature(self, feature: str, vetoed: bool) -> dict:
+        """
+        Method returns information about amendments this server knows about, including whether
+        they are enabled and whether the server is voting in favor of those amendments in the amendment process.
+        The feature method is an admin method that cannot be run by unprivileged users.
+        Reference: https://developers.ripple.com/feature.html
+        """
+        params = dict(
+            feature=feature,
+            vetoed=vetoed
+        )
+        return self._call('feature', params)
+
+    def fetch_info(self, clear: bool) -> dict:
+        """
+        Method returns information about objects that this server is currently fetching from the network,
+        and how many peers have that information. It can also be used to reset current fetches.
+        The fetch_info method is an admin method that cannot be run by unprivileged users.
+        Reference: https://developers.ripple.com/fetch_info.html
+        """
+        return self._call('fetch_info', params=dict(clear=clear))
+
+    def get_counts(self, min_count: int) -> dict:
+        """
+        Method provides various stats about the health of the server, mostly the number of objects of different types
+        that it currently holds in memory.
+        The get_counts method is an admin method that cannot be run by unprivileged users.
+        Reference: https://developers.ripple.com/get_counts.html
+        """
+        return self._call('get_counts', params=dict(min_count=min_count))
+
+    def peers(self) -> dict:
+        """
+        Method returns a list of all other rippled servers currently connected to this one,
+        including information on their connection and sync status.
+        The peers request is an admin method that cannot be run by unprivileged users!
+        Reference: https://developers.ripple.com/peers.html
+        """
+        return self._call('peers', params=dict())
+
+    def print(self) -> dict:
+        """
+        Method returns the current status of various internal subsystems, including peers,
+        the ledger cleaner, and the resource manager.
+        The print request is an admin method that cannot be run by unprivileged users!
+        Reference: https://developers.ripple.com/print.html
+        """
+        return self._call('print', params=dict())
+
+    def validator_list_sites(self) -> dict:
+        """
+        Method returns status information of sites serving validator lists.
+        The validator_list_sites request is an admin method that cannot be run by unprivileged users!
+        Reference: https://developers.ripple.com/validator_list_sites.html
+        """
+        return self._call('validator_list_sites', params=dict())
+
+    def validators(self) -> dict:
+        """
+        Method returns human readable information about the current list of published and trusted validators used
+        by the server.
+        The validators request is an admin method that cannot be run by unprivileged users!
+        Reference: https://developers.ripple.com/validators.html
+        """
+        return self._call('validators', params=dict())
+
 
 if __name__ == '__main__':
     test_address = 'r9cZA1mLK5R5Am25ArfXFmqgNwjZgnfk59'
-    rpc = RippleRPCClient('http://s1.ripple.com:51234/', 'testnet')
+    rpc = RippleRPCClient('http://s1.ripple.com:51234/')
     print(rpc.server_info())
