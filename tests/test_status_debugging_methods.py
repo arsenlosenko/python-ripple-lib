@@ -1,4 +1,4 @@
-from test import BaseTestClass
+from tests import BaseTestClass
 
 
 class TestStatusDebuggingMehods(BaseTestClass):

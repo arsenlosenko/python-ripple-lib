@@ -401,7 +401,7 @@ class RippleRPCClient(object):
         return self._call('wallet_propose', params)
 
     def can_delete(self, can_delete: int) -> dict:
-        # TODO: implement needed config to test the method
+        # TODO: implement needed config to tests the method
         """
         With online_delete and advisory_delete configuration options enabled, the can_delete method
         informs the rippled server of the latest ledger which may be deleted.
@@ -507,5 +507,6 @@ class RippleRPCClient(object):
 
 if __name__ == '__main__':
     test_address = 'r9cZA1mLK5R5Am25ArfXFmqgNwjZgnfk59'
-    rpc = RippleRPCClient('http://s1.ripple.com:51234/')
-    print(rpc.server_info())
+    rpc = RippleRPCClient('http://localhost:5005/')
+    info = rpc.server_info()
+    print(json.dumps(info, indent=2, sort_keys=True))

@@ -1,6 +1,6 @@
 import unittest
 
-from api.json_rpc import RippleRPCClient
+from ripple_api.json_rpc import RippleRPCClient
 
 
 class BaseTestClass(unittest.TestCase):
