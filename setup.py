@@ -9,7 +9,7 @@ setup(
     author='Arsen Losenko',
     author_email='arsenlosenko@gmail.com',
     description='Ripple JSON-RPC API wrapper for python',
-    long_description=open('readme.rst').read(),
+    long_description=open('README.rst').read(),
     keywords='ripple rippled json-rpc',
     classifiers=[
             'Development Status :: 3 - Alpha',
