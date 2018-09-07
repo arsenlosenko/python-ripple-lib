@@ -215,29 +215,45 @@ class RippleRPCClient(object):
         )
         return self._call('ledger_entry', params)
 
-    def sign(self, offline: bool = False, secret: str = '', tx_json: dict = None, fee_mult_max: int = 1000) -> dict:
+    def sign(self, tx_json: dict = None, secret: str = '',
+             offline: bool = False, fee_mult_max: int = 1000) -> dict:
         """
         The sign method takes a transaction in JSON format and a secret key,
         and returns a signed binary representation of the transaction. The result is always different,
         even when you provide the same transaction JSON and secret key.
         Reference: https://developers.ripple.com/sign.html
         """
-        return NotImplemented
+        params = dict(
+            offline=offline,
+            secret=secret,
+            tx_json=tx_json,
+            fee_mult_max=fee_mult_max
+        )
+        return self._call('sign', params)
 
     def sign_for(self, account: str, seed: str, key_type: str = "ed25519", tx_json: dict = None) -> dict:
         """
         Method provides one signature for a multi-signed transaction.
         Reference: https://developers.ripple.com/sign_for.html
         """
-        return NotImplemented
+        params = dict(
+            account=account,
+            seed=seed,
+            key_type=key_type,
+            tx_json=tx_json
+        )
+        return self._call('sign_for', params)
 
     def submit(self, tx_blob: str, fail_hard: bool = False) -> dict:
         """
         Method applies a transaction and sends it to the network to be confirmed and included in future ledgers.
         Reference: https://developers.ripple.com/submit.html
         """
-        # TODO: implement submit-only and sign-and-submit
-        return NotImplemented
+        params = dict(
+            tx_blob=tx_blob,
+            fail_hard=fail_hard
+        )
+        return self._call('submit', params)
 
     def submit_mutlisigned(self, tx_json: dict = None):
         """
@@ -245,7 +261,7 @@ class RippleRPCClient(object):
         (You can also submit multi-signed transactions in binary form using the submit command in submit-only mode.)
         Reference: https://developers.ripple.com/submit_multisigned.html
         """
-        return NotImplemented
+        return self._call('submit_multisigned', params=dict(tx_json=tx_json))
 
     def transaction_entry(self, tx_hash: str, ledger_index: int) -> dict:
         """
@@ -508,5 +524,4 @@ class RippleRPCClient(object):
 if __name__ == '__main__':
     test_address = 'r9cZA1mLK5R5Am25ArfXFmqgNwjZgnfk59'
     rpc = RippleRPCClient('http://localhost:5005/')
-    info = rpc.server_info()
-    print(json.dumps(info, indent=2, sort_keys=True))
+    print(json.dumps(rpc.server_info(), indent=2))
