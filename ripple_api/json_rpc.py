@@ -32,7 +32,7 @@ class RippleRPCClient(object):
         except HTTPError as err:
             if err.code == 403:
                 return {"status": "error",
-                        "error": err,
+                        "error": "{} {}".format(err.code, err.reason),
                         "text": "Admin methods are only allowed on nodes with admin access."}
             return {"status": "error", "error": err}
         except URLError as err:
