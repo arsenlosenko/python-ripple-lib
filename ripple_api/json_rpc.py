@@ -1,6 +1,6 @@
 import json
 from urllib.request import Request, urlopen
-from urllib.error import HTTPError
+from urllib.error import HTTPError, URLError
 
 
 class RippleRPCClient(object):
@@ -35,6 +35,9 @@ class RippleRPCClient(object):
                         "error": err,
                         "text": "Admin methods are only allowed on nodes with admin access."}
             return {"status": "error", "error": err}
+        except URLError as err:
+            return {"status": "error",
+                    "error": err}
 
     def account_info(self, account: str, strict: bool=True, ledger_index: str='current', queue: bool=True) -> dict:
         """
@@ -339,13 +342,18 @@ class RippleRPCClient(object):
         )
         return self._call('ripple_path_find', params)
 
-    # TODO: implement channel_authorize and channel_verify on local node
     def channel_authorize(self, channel_id: str, secret: str, amount: str) -> dict:
         """
         Method creates a signature that can be used to redeem a specific amount of XRP from a payment channel.
-        Reference: https://developers.ripple.com/channel_authorize.html#main_content_body
+        Reference: https://developers.ripple.com/channel_authorize.html
         """
-        return NotImplemented
+        params = dict(
+            channel_id=channel_id,
+            secret=secret,
+            amount=amount
+
+        )
+        return self._call('channel_authorize', params)
 
     def channel_verify(self, channel_id: str, signature: str, public_key: str, amount: str) -> dict:
         """
@@ -353,7 +361,13 @@ class RippleRPCClient(object):
         from a payment channel.
         Reference: https://developers.ripple.com/channel_verify.html
         """
-        return NotImplemented
+        params = dict(
+            channel_id=channel_id,
+            signature=signature,
+            public_key=public_key,
+            amount=amount
+        )
+        return self._call('channel_verify', params)
 
     def fee(self) -> dict:
         """
