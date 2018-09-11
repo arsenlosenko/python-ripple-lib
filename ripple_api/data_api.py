@@ -9,19 +9,20 @@ class DataAPIClient(object):
     def _call(self, url_params: tuple, params: dict) -> dict:
         """
         Send request to data API
-        :param endpoint: path of endpoint of the API
+        :param url_params: url parameters which are forming endpoint
         :param params: query params
         :return: response dict
         """
         api_version = '/v2/'
         endpoint = '/'.join(url_params)
         url = self.node + api_version + endpoint
-        req = Request(method='GET',
-                      url=url,
-                      data=params)
-        with urlopen(req) as res:
-            res_json = json.loads(res.fp.read().decode('utf-8'))
-            return res_json
+        req = Request(method='GET', url=url, data=params)
+        try:
+            with urlopen(req) as res:
+                res_json = json.loads(res.fp.read().decode('utf-8'))
+                return res_json
+        except Exception as err:
+            return {"status": "error", "error": err}
 
     def get_ledger(self, ledger_identifier: str, **query_params) -> dict:
         """
