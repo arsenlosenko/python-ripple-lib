@@ -1,5 +1,5 @@
 from ripple_api.json_rpc import RippleRPCClient
-from ripple_api.data_api import DataAPIClient
+from ripple_api.data_api import RippleDataAPIClient
 
 
 class Account(RippleRPCClient):

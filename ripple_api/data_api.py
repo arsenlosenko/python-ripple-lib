@@ -2,7 +2,7 @@ import json
 from urllib.request import Request, urlopen
 
 
-class DataAPIClient(object):
+class RippleDataAPIClient(object):
     def __init__(self, node='https://data.ripple.com'):
         self.node = node
 

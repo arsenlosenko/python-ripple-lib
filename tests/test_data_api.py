@@ -1,6 +1,6 @@
 import unittest
 
-from ripple_api import DataAPIClient
+from ripple_api import RippleDataAPIClient
 
 
 class TestLedgerRequests(unittest.TestCase):
@@ -8,7 +8,7 @@ class TestLedgerRequests(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.api = DataAPIClient(cls.node)
+        cls.api = RippleDataAPIClient(cls.node)
 
     def test_get_legder(self):
         identifier = '3170DA37CE2B7F045F889594CBC323D88686D2E90E8FFD2BBCD9BAD12E416DB5'
