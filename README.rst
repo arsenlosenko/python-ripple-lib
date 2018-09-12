@@ -37,7 +37,7 @@ JSON-RPC Methods
 | Most of JSON-RPC methods are implemented inside, for the full list of methods please refer to list of `Public <https://developers.ripple.com/public-rippled-methods.html>`_ and `Admin <https://developers.ripple.com/admin-rippled-methods.html>`_ methods from ripple documentation
 | How to use:
 
-::
+.. code-block:: python
 
     from ripple_api import RippleRPCClient
 
@@ -51,7 +51,7 @@ Data API Methods
 | Most of Data API requests are implemented here as well, fll list located in `here <https://developers.ripple.com/data-api.html>`_
 | How to use:
 
-::
+.. code-block:: python
 
     from ripple_api import RippleDataAPIClient
 
