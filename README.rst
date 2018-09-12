@@ -1,12 +1,8 @@
 ===================
 python-ripple-lib
 ===================
-Description
-------------
-
-python-ripple-rpc is a small client library to access Ripple `rippled API <https://developers.ripple.com/rippled-api.html>`_.
-Currently it supports public and admin methods (some of them still are work in progress though). List of implemented methods will be displayed below.
-Basically, it's just a wrapper on top of http requests made to API.
+| python-ripple-lib is a client library to access Ripple `rippled API <https://developers.ripple.com/rippled-api.html>`_ and `Data API <https://developers.ripple.com/data-api.html>`_.
+| Currently it supports public and admin methods (some of them still are work in progress though). List of implemented methods is displayed below. Basically, it's just a wrapper on top of http requests made to API.
 
 Installation
 -------------
@@ -61,3 +57,24 @@ Data API Methods
     ledger_info = api.get_ledger(ledger_identifier=identifier, **query_params)
 
 
+
+Contributing
+------------------------
+
+1. Fork this project
+2. Clone it locally
+3. Add your changes
+4. Run tests:
+
+::
+
+    make tests
+
+or
+
+::
+
+    python -m unittest -v
+
+5. If tests are successful and everything is OK, commit to your local fork
+6. Submit a pull request to this repo
