@@ -15,7 +15,7 @@ To install the package from PyPi run the following command
 
 ::
 
-    pip install ripple-python-rpc
+    pip install python-ripple-rpc
 
 If you want to install package from this repo, use ``setup.py``
 
@@ -37,7 +37,7 @@ JSON-RPC Methods
 | Most of JSON-RPC methods are implemented inside, for the full list of methods please refer to list of `Public <https://developers.ripple.com/public-rippled-methods.html>`_ and `Admin <https://developers.ripple.com/admin-rippled-methods.html>`_ methods from ripple documentation
 | How to use:
 
-.. code-block:: python
+.. code-block:: python3
 
     from ripple_api import RippleRPCClient
 
@@ -58,6 +58,6 @@ Data API Methods
     api = RippleDataAPIClient('https://data.ripple.com')
     identifier = '3170DA37CE2B7F045F889594CBC323D88686D2E90E8FFD2BBCD9BAD12E416DB5'
     query_params = dict(transactions='true')
-    ledger_info = self.api.get_ledger(ledger_identifier=identifier, **query_params)
+    ledger_info = api.get_ledger(ledger_identifier=identifier, **query_params)
 
 

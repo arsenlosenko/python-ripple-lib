@@ -533,9 +533,3 @@ class RippleRPCClient(object):
         Reference: https://developers.ripple.com/validators.html
         """
         return self._call('validators', params=dict())
-
-
-if __name__ == '__main__':
-    test_address = 'r9cZA1mLK5R5Am25ArfXFmqgNwjZgnfk59'
-    rpc = RippleRPCClient('http://localhost:5005/')
-    print(json.dumps(rpc.server_info(), indent=2))

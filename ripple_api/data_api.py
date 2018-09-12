@@ -449,8 +449,3 @@ class RippleDataAPIClient(object):
         """
         url_params = 'health', 'validations_etl'
         return self._call(url_params, query_params)
-
-
-if __name__ == '__main__':
-    data_api = DataAPIClient()
-    print(data_api.check_api())

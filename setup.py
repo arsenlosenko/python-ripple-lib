@@ -1,8 +1,8 @@
 from setuptools import setup
 
 setup(
-    name='python_ripple_lib',
-    version='1.0.1',
+    name='python-ripple-rpc',
+    version='1.0.2',
     packages=['ripple_api'],
     url='https://github.com/arsenlosenko/python-ripple-rpc',
     license='MIT',
