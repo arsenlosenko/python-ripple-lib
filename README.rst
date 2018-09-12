@@ -1,5 +1,5 @@
 ===================
-python-ripple-rpc
+python-ripple-lib
 ===================
 Description
 ------------
@@ -15,7 +15,7 @@ To install the package from PyPi run the following command
 
 ::
 
-    pip install python-ripple-rpc
+    pip install python-ripple-lib
 
 If you want to install package from this repo, use ``setup.py``
 
