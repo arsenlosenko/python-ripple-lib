@@ -16,7 +16,8 @@ class DataAPIClient(object):
         api_version = '/v2/'
         endpoint = '/'.join(url_params)
         url = self.node + api_version + endpoint
-        req = Request(method='GET', url=url, data=params)
+        data = json.dumps(params).encode('utf-8')
+        req = Request(method='GET', url=url, data=data)
         try:
             with urlopen(req) as res:
                 res_json = json.loads(res.fp.read().decode('utf-8'))
@@ -65,13 +66,15 @@ class DataAPIClient(object):
         """
         return self._call(('transactions', ), query_params)
 
-    def get_payments(self, currency: str="", **query_params) -> dict:
+    def get_payments(self, currency: str=None, **query_params) -> dict:
         """
         Retrieve Payments over time, where Payments are defined as Payment type transactions where the sender
         of the transaction is not also the destination.
         Reference: https://developers.ripple.com/data-api.html#get-payments
         """
-        url_params = 'payments', currency
+        url_params = 'payments'
+        if currency:
+            url_params = 'payments', currency
         return self._call(url_params, query_params)
 
     def get_exchanges(self, base: str, counter: str, **query_params) -> dict:
@@ -98,12 +101,14 @@ class DataAPIClient(object):
         """
         return self._call(('normalize', ), query_params)
 
-    def get_daily_reports(self, date: str="", **query_params) -> dict:
+    def get_daily_reports(self, date: str=None, **query_params) -> dict:
         """
         Retrieve per account per day aggregated payment summaries
         Refernce: https://developers.ripple.com/data-api.html#get-daily-reports
         """
-        url_params = 'reports', date
+        url_params = 'reports'
+        if date:
+            url_params = 'reports', date
         return self._call(url_params, query_params)
 
     def get_stats(self, **query_params) -> dict:
@@ -161,20 +166,24 @@ class DataAPIClient(object):
         url_params = 'network', 'xrp_distribution'
         return self._call(url_params, query_params)
 
-    def get_top_currencies(self, date: str="", **query_params) -> dict:
+    def get_top_currencies(self, date: str=None, **query_params) -> dict:
         """
         Returns the top currencies on the XRP Ledger, ordered from highest rank to lowest.
         Reference: https://developers.ripple.com/data-api.html#get-top-currencies
         """
-        url_params = 'network', 'top_currencies', date
+        url_params = 'network', 'top_currencies'
+        if date:
+            url_params = 'network', 'top_currencies', date
         return self._call(url_params, query_params)
 
-    def get_top_markets(self, date: str="", **query_params) -> dict:
+    def get_top_markets(self, date: str=None, **query_params) -> dict:
         """
         Returns the top exchange markets on the XRP Ledger, ordered from highest rank to lowest.
         Reference: https://developers.ripple.com/data-api.html#get-top-markets
         """
-        url_params  = 'network', 'top_markets', date
+        url_params = 'network', 'top_markets'
+        if date:
+            url_params = 'network', 'top_markets', date
         return self._call(url_params, query_params)
 
     def get_transaction_costs(self, **query_params) -> dict:
