@@ -10,6 +10,9 @@ class RippleRPCClient(object):
         """
         self.node = node
 
+    def __repr__(self):
+        return '<RippleRPCClient node=%r>' % self.node
+
     def _call(self, method: str, params: dict) -> dict:
         """Base method which sends requests to node
         :param method: JSON-RPC method of rippled

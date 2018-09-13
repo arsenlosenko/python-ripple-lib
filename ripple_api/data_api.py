@@ -3,8 +3,11 @@ from urllib.request import Request, urlopen
 
 
 class RippleDataAPIClient(object):
-    def __init__(self, node='https://data.ripple.com'):
+    def __init__(self, node: str='https://data.ripple.com'):
         self.node = node
+
+    def __repr__(self):
+        return '<RippleDataAPIClient node=%r>' % self.node
 
     def _call(self, url_params: tuple, params: dict) -> dict:
         """
