@@ -64,7 +64,7 @@ class RippleRPCClient(object):
         """
         return self._call('account_lines', params=dict(account=account))
 
-    def account_channels(self, account: str, destination_account:str, ledger_index: str='validated') -> dict:
+    def account_channels(self, account: str, destination_account: str, ledger_index: str='validated') -> dict:
         """
         Method returns information about an account's Payment Channels.
         This includes only channels where the specified account is the channel's source, not the destination.
@@ -117,7 +117,7 @@ class RippleRPCClient(object):
         return self._call('account_offers', params=dict(account=account))
 
     def account_tx(self, account: str, binary: bool=False, forward: bool=False,
-                   ledger_index_max=-1, ledger_index_min=-1, limit=2) -> dict:
+                   ledger_index_max: int=-1, ledger_index_min: int=-1, limit: int=2) -> dict:
         """
         Method retrieves a list of transactions that involved the specified account.
         Reference: https://developers.ripple.com/account_tx.html
@@ -132,7 +132,8 @@ class RippleRPCClient(object):
         )
         return self._call('account_tx', params)
 
-    def gateway_balances(self, account: str, hotwallet: list=None, ledger_index: str="validated", strict: bool=True) -> dict:
+    def gateway_balances(self, account: str, hotwallet: list=None,
+                         ledger_index: str="validated", strict: bool=True) -> dict:
         """
         Method calculates the total balances issued by a given account, optionally excluding amounts held by
         operational addresses.
@@ -229,6 +230,7 @@ class RippleRPCClient(object):
         even when you provide the same transaction JSON and secret key.
         Reference: https://developers.ripple.com/sign.html
         """
+        tx_json = {} if tx_json is None else tx_json
         params = dict(
             offline=offline,
             secret=secret,
@@ -267,6 +269,7 @@ class RippleRPCClient(object):
         (You can also submit multi-signed transactions in binary form using the submit command in submit-only mode.)
         Reference: https://developers.ripple.com/submit_multisigned.html
         """
+        tx_json = {} if tx_json is None else tx_json
         return self._call('submit_multisigned', params=dict(tx_json=tx_json))
 
     def transaction_entry(self, tx_hash: str, ledger_index: int) -> dict:
