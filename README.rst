@@ -4,6 +4,8 @@ python-ripple-lib
 | python-ripple-lib is a client library to access Ripple `rippled API <https://developers.ripple.com/rippled-api.html>`_ and `Data API <https://developers.ripple.com/data-api.html>`_.
 | Currently it supports public and admin methods (some of them still are work in progress though). List of implemented methods is displayed below. Basically, it's just a wrapper on top of http requests made to API.
 
+Available on `PyPi <https://pypi.org/project/python-ripple-lib/>`_
+
 Installation
 -------------
 
