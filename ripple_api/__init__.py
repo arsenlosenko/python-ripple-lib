@@ -25,3 +25,26 @@ class Account(RippleRPCClient):
         tx_info = self.sign(tx_json=payment_json, secret=self.seed)
         tx_blob = tx_info.get('tx_blob')
         return self.submit(tx_blob=tx_blob)
+
+    def send_currency(self, issuer: str, taker: str, currency: str, amount: str) -> dict:
+        """
+        Send amount of some currency from one account to another
+        :param issuer:  address of account, from which you send xrp
+        :param taker: address of account which receives xrp
+        :param currency: name of the currency which will be sent
+        :param amount: amount of xrp that will be sent
+        :return:  transaction data (tx_id, taker, issuer, amount)
+        """
+        payment_json = dict(
+            Account=issuer,
+            Amount=dict(
+                currency=currency,
+                issuer=issuer,
+                value=amount
+            ),
+            Destination=taker,
+            TransactionType="Payment"
+        )
+        tx_info = self.sign(tx_json=payment_json, secret=self.seed)
+        tx_blob = tx_info.get('tx_blob')
+        return self.submit(tx_blob=tx_blob)

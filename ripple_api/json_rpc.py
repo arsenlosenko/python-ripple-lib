@@ -117,7 +117,7 @@ class RippleRPCClient(object):
         return self._call('account_offers', params=dict(account=account))
 
     def account_tx(self, account: str, binary: bool=False, forward: bool=False,
-                   ledger_index_max: int=-1, ledger_index_min: int=-1, limit: int=2) -> dict:
+                   ledger_index_max: int=-1, ledger_index_min: int=-1, limit: int=0) -> dict:
         """
         Method retrieves a list of transactions that involved the specified account.
         Reference: https://developers.ripple.com/account_tx.html
