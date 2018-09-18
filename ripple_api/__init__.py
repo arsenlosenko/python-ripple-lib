@@ -3,8 +3,9 @@ from ripple_api.data_api import RippleDataAPIClient
 
 
 class Account(RippleRPCClient):
-    def __init__(self, node, seed):
+    def __init__(self, node: str, account: str, seed: str) -> None:
         super(Account, self).__init__(node)
+        self.account = account
         self.seed = seed
 
     def send_xrp(self, issuer: str, taker: str, amount: str) -> dict:
@@ -17,17 +18,10 @@ class Account(RippleRPCClient):
         """
         payment_json = dict(
             Account=issuer,
-            Amount=dict(
-                currency="XRP",
-                issuer=issuer,
-                value=amount
-            ),
+            Amount=amount,
             Destination=taker,
             TransactionType="Payment"
-
         )
         tx_info = self.sign(tx_json=payment_json, secret=self.seed)
         tx_blob = tx_info.get('tx_blob')
-        self.submit(tx_blob=tx_blob)
-        return self.tx(tx=tx_blob)
-
+        return self.submit(tx_blob=tx_blob)
