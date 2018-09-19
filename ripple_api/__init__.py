@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from ripple_api.json_rpc import RippleRPCClient
 from ripple_api.data_api import RippleDataAPIClient
 
@@ -7,6 +9,7 @@ class Account(RippleRPCClient):
         super(Account, self).__init__(node)
         self.account = account
         self.seed = seed
+        self.xrp_base = Decimal(1000000)
 
     def send_xrp(self, issuer: str, taker: str, amount: str) -> dict:
         """
@@ -18,7 +21,7 @@ class Account(RippleRPCClient):
         """
         payment_json = dict(
             Account=issuer,
-            Amount=amount,
+            Amount=int(Decimal(amount) * self.xrp_base),
             Destination=taker,
             TransactionType="Payment"
         )
@@ -40,7 +43,7 @@ class Account(RippleRPCClient):
             Amount=dict(
                 currency=currency,
                 issuer=issuer,
-                value=amount
+                value=int(Decimal(amount) * self.xrp_base),
             ),
             Destination=taker,
             TransactionType="Payment"

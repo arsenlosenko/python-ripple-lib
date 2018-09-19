@@ -4,18 +4,18 @@ from random import choice
 RIPPLED_B58_DICT = 'rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz'
 
 
-def generate_seed(seed_type: str = 'base58') -> str:
-    if seed_type == 'base58':
+def generate_seed(type: str = 'base58') -> str:
+    if type == 'base58':
         return b58_seed()
-    elif seed_type == 'rfc1751':
+    elif type == 'rfc1751':
         return rfc1751_seed()
-    elif seed_type == 'hex':
+    elif type == 'hex':
         return hex_seed()
-    elif seed_type == 'passphrase':
+    elif type == 'passphrase':
         alphabet = string.ascii_letters + string.digits
         return ''.join(choice(alphabet) for i in range(20))
-    return "Please specify correct type of seed, " \
-           "it should be either 'base58', 'rfc1751', 'hex' or 'passphrase'"
+    raise Exception("Please specify correct type of seed,"
+                    "it should be either 'base58', 'rfc1751', 'hex' or 'passphrase'")
 
 
 def b58_seed() -> str:
