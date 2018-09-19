@@ -10,13 +10,19 @@ class Account(RippleRPCClient):
         self.account = account
         self.seed = seed
         self.xrp_base = Decimal(1000000)
+        
+    def sign_and_submit(self, tx_json: dict, secret: str) -> dict:
+        tx_info = self.sign(tx_json=tx_json, secret=secret)
+        tx_blob = tx_info.get('tx_blob')
+        return self.submit(tx_blob=tx_blob)
 
-    def send_xrp(self, issuer: str, taker: str, amount: str) -> dict:
+    def send_xrp(self, issuer: str, taker: str, amount: str, secret: str) -> dict:
         """
         Send XRP from one account to another
         :param issuer:  address of account, from which you send xrp
         :param taker: address of account which receives xrp
         :param amount: amount of xrp that will be sent
+        :param secret: seed of the issuer
         :return:  transaction data (tx_id, taker, issuer, amount)
         """
         payment_json = dict(
@@ -25,17 +31,16 @@ class Account(RippleRPCClient):
             Destination=taker,
             TransactionType="Payment"
         )
-        tx_info = self.sign(tx_json=payment_json, secret=self.seed)
-        tx_blob = tx_info.get('tx_blob')
-        return self.submit(tx_blob=tx_blob)
+        return self.sign_and_submit(tx_json=payment_json, secret=secret)
 
-    def send_currency(self, issuer: str, taker: str, currency: str, amount: str) -> dict:
+    def send_currency(self, issuer: str, taker: str, currency: str, amount: str, secret: str) -> dict:
         """
         Send amount of some currency from one account to another
         :param issuer:  address of account, from which you send xrp
         :param taker: address of account which receives xrp
         :param currency: name of the currency which will be sent
         :param amount: amount of xrp that will be sent
+        :param secret: seed of the issuer
         :return:  transaction data (tx_id, taker, issuer, amount)
         """
         payment_json = dict(
@@ -48,6 +53,4 @@ class Account(RippleRPCClient):
             Destination=taker,
             TransactionType="Payment"
         )
-        tx_info = self.sign(tx_json=payment_json, secret=self.seed)
-        tx_blob = tx_info.get('tx_blob')
-        return self.submit(tx_blob=tx_blob)
+        return self.sign_and_submit(tx_json=payment_json, secret=secret)
