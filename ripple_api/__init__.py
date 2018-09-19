@@ -10,8 +10,28 @@ class Account(RippleRPCClient):
         self.account = account
         self.seed = seed
         self.xrp_base = Decimal(1000000)
+
+    def __repr__(self):
+        return '<Account address={}>'.format(self.account)
+
+    def balance(self, address: str=None) -> Decimal:
+        """
+        Get balance of XRP, if address is not specified return balance of the main address
+        :param address: xrp address
+        :return: amount of XRP
+        """
+        address = self.account if address is None else address
+        info = self.account_info(account=address)
+        balance = info.get('account_data', {}).get('Balance', 0)
+        return Decimal(balance) / self.xrp_base
         
     def sign_and_submit(self, tx_json: dict, secret: str) -> dict:
+        """
+        Base method that sign and sends money
+        :param tx_json: transaction json, formatted accordingly
+        :param secret: seed of the account
+        :return: transaction data
+        """
         tx_info = self.sign(tx_json=tx_json, secret=secret)
         tx_blob = tx_info.get('tx_blob')
         return self.submit(tx_blob=tx_blob)
