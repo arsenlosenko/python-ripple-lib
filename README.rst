@@ -59,6 +59,19 @@ Data API Methods
     ledger_info = api.get_ledger(ledger_identifier=identifier, **query_params)
 
 
+Additional methods
+------------------
+Send XRP from address tp address via Account instance:
+
+.. code-block:: python
+
+    from ripple_api import Account
+
+    taker = 'rYuHe4VogMzYmvHpSsgGxRH97UvqumgER'
+    issuer = 'rMEmLrfkfooLjdkerU5TKTcAVpfy9fpSxt'
+    seed = '<account_seed>'
+    account = Account('https://s.altnet.rippletest.net:51234', issuer, seed)
+    tx_info = account.send_xrp(issuer=issuer, taker=taker, secret=seed, amount=10)
 
 Contributing
 ------------------------
