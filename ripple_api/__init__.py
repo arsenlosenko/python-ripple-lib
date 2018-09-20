@@ -27,7 +27,7 @@ class Account(RippleRPCClient):
         
     def sign_and_submit(self, tx_json: dict, secret: str) -> dict:
         """
-        Base method that sign and sends money
+        Base method that signs transaction and submits it
         :param tx_json: transaction json, formatted accordingly
         :param secret: seed of the account
         :return: transaction data
