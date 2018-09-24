@@ -70,7 +70,7 @@ Send XRP from address tp address via Account instance:
     taker = 'rYuHe4VogMzYmvHpSsgGxRH97UvqumgER'
     issuer = 'rMEmLrfkfooLjdkerU5TKTcAVpfy9fpSxt'
     seed = '<account_seed>'
-    account = Account('https://s.altnet.rippletest.net:51234', issuer, seed)
+    account = Account('http://localhost:5005', issuer, seed)
     tx_info = account.send_xrp(issuer=issuer, taker=taker, secret=seed, amount=10)
 
 Contributing
