@@ -47,7 +47,7 @@ class Account(RippleRPCClient):
         """
         payment_json = dict(
             Account=issuer,
-            Amount=int(Decimal(amount) * self.xrp_base),
+            Amount=str(Decimal(amount) * self.xrp_base),
             Destination=taker,
             TransactionType="Payment"
         )
