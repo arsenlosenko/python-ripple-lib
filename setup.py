@@ -1,6 +1,6 @@
 from setuptools import setup
 
-version = '1.0.3.1'
+version = '1.0.4'
 
 setup(
     name='python-ripple-lib',

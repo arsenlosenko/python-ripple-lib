@@ -39,7 +39,8 @@ JSON-RPC Methods
 
     from ripple_api import RippleRPCClient
 
-    rpc = RippleRPCClient('http://s1.ripple.com:51234/')
+    # module supports authentication as well
+    rpc = RippleRPCClient('http://s1.ripple.com:51234/', username='<username>', password='<password>')
     account_info = rpc.account_info('r9cZA1mLK5R5Am25ArfXFmqgNwjZgnfk59')
 
 
