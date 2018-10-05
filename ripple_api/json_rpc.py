@@ -6,7 +6,7 @@ from urllib.error import HTTPError, URLError
 
 
 class RippleRPCClient(object):
-    def __init__(self, node: str, username: str, password: str):
+    def __init__(self, node: str, username: str = None, password: str = None):
         """
         :param node: URL of rippled node
         :param username: username of admin in rippled node
@@ -21,13 +21,13 @@ class RippleRPCClient(object):
 
     @property
     def request_headers(self):
-        string = '{}:{}'.format(self.username, self.password)
-        base64string = base64.standard_b64encode(
-            string.encode('utf-8')).decode('utf-8')
-        return {
-            'Authorization': 'Basic {}'.format(base64string),
-            'Content-Type': 'application/json'
-        }
+        headers = {'Content-Type': 'application/json'}
+        if self.username and self.password:
+            string = '{}:{}'.format(self.username, self.password)
+            base64string = base64.standard_b64encode(
+                string.encode('utf-8')).decode('utf-8')
+            headers.update({'Authorization': 'Basic {}'.format(base64string)})
+        return headers
 
     def _call(self, method: str, params: dict) -> dict:
         """Base method which sends requests to node
