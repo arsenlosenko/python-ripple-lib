@@ -1,17 +1,33 @@
+import base64
 import json
+
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError, URLError
 
 
 class RippleRPCClient(object):
-    def __init__(self, node: str):
+    def __init__(self, node: str, username: str, password: str):
         """
         :param node: URL of rippled node
+        :param username: username of admin in rippled node
+        :param password: password of admin in rippled node
         """
         self.node = node
+        self.username = username
+        self.password = password
 
     def __repr__(self):
         return '<RippleRPCClient node=%r>' % self.node
+
+    @property
+    def request_headers(self):
+        string = '{}:{}'.format(self.username, self.password)
+        base64string = base64.standard_b64encode(
+            string.encode('utf-8')).decode('utf-8')
+        return {
+            'Authorization': 'Basic {}'.format(base64string),
+            'Content-Type': 'application/json'
+        }
 
     def _call(self, method: str, params: dict) -> dict:
         """Base method which sends requests to node
@@ -25,7 +41,7 @@ class RippleRPCClient(object):
             ]
         }).encode('utf-8')
         req = Request(method='POST', url=self.node,
-                      data=payload, headers={'Content-Type': 'application/json'})
+                      data=payload, headers=self.request_headers)
         try:
             with urlopen(req) as res:
                 res_json = json.loads(res.fp.read().decode('utf-8'))
