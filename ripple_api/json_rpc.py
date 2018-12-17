@@ -439,7 +439,7 @@ class RippleRPCClient(object):
         """
         return self._call('validation_create', params=dict(secret=secret))
 
-    def wallet_propose(self, seed: str, passphrase: str, key: str="secp256k1") -> dict:
+    def wallet_propose(self, seed: str='', passphrase: str='', key: str="secp256k1") -> dict:
         """
         Method to generate a key pair and XRP Ledger address.
         This command only generates key and address values, and does not affect the XRP Ledger itself in any way.
@@ -447,13 +447,12 @@ class RippleRPCClient(object):
         Reference: https://developers.ripple.com/wallet_propose.html
         """
         params = dict(
-            seed=seed,
             key=key
         )
+        if seed:
+            params['seed'] = seed
         if passphrase:
-            params = dict(
-                passphrase=passphrase
-            )
+            params['passphrase'] = passphrase
         return self._call('wallet_propose', params)
 
     def can_delete(self, can_delete: int) -> dict:

@@ -1,5 +1,6 @@
 import json
 from urllib.request import Request, urlopen
+from urllib.parse import urlencode
 
 
 class RippleDataAPIClient(object):
@@ -19,8 +20,8 @@ class RippleDataAPIClient(object):
         api_version = '/v2/'
         endpoint = '/'.join(url_params)
         url = self.node + api_version + endpoint
-        data = json.dumps(params).encode('utf-8')
-        req = Request(method='GET', url=url, data=data)
+        url = url + '?' + urlencode(params)
+        req = Request(method='GET', url=url)
         try:
             with urlopen(req) as res:
                 res_json = json.loads(res.fp.read().decode('utf-8'))
