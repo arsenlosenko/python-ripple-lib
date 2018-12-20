@@ -60,6 +60,22 @@ Data API Methods
     ledger_info = api.get_ledger(ledger_identifier=identifier, **query_params)
 
 
+| Example of get_transactions() query:
+
+.. code-block:: python
+
+   from ripple_api import RippleDataAPIClient
+   from pprint import pprint
+
+   api = RippleDataAPIClient('https://data.ripple.com')
+   # to get name of a specific transaction type please refer to this link:
+   # https://developers.ripple.com/transaction-types.html
+   query_params = dict(type="Payment")
+   txs = api.get_transactions(**query_params)
+   pprint(txs)
+
+
+
 Additional methods
 ------------------
 Send XRP from address tp address via Account instance:
