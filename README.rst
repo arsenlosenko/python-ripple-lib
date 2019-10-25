@@ -100,7 +100,7 @@ Contributing
 
 ::
 
-    make tests
+    make test
 
 or
 

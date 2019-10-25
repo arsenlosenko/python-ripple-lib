@@ -51,14 +51,15 @@ class RippleRPCClient(object):
         except HTTPError as err:
             if err.code == 403:
                 return {"status": "error",
-                        "error": "{} {}".format(err.code, err.reason),
+                        "msg": "{} {}".format(err.code, err.reason),
                         "text": "Admin methods are only allowed on nodes with admin access."}
-            return {"status": "error", "error": err}
+            return {"status": "error", "msg": err}
         except URLError as err:
             return {"status": "error",
-                    "error": err}
+                    "msg": err}
 
-    def account_info(self, account: str, strict: bool=True, ledger_index: str='current', queue: bool=True) -> dict:
+    def account_info(self, account: str, strict: bool = True,
+                     ledger_index: str = 'current', queue: bool = True) ->dict:
         """
         Method retrieves information about an account, its activity, and its XRP balance.
         All information retrieved is relative to a particular version of the ledger.
@@ -80,7 +81,9 @@ class RippleRPCClient(object):
         """
         return self._call('account_lines', params=dict(account=account))
 
-    def account_channels(self, account: str, destination_account: str, ledger_index: str='validated') -> dict:
+    def account_channels(
+            self, account: str, destination_account: str,
+            ledger_index: str = 'validated') ->dict:
         """
         Method returns information about an account's Payment Channels.
         This includes only channels where the specified account is the channel's source, not the destination.
@@ -95,8 +98,9 @@ class RippleRPCClient(object):
         )
         return self._call('account_channels', params)
 
-    def account_currencies(self, account: str, account_index: int=0,
-                           ledger_index: str="validated", strict: bool=True) -> dict:
+    def account_currencies(
+            self, account: str, account_index: int = 0,
+            ledger_index: str = "validated", strict: bool = True) ->dict:
         """
         Method retrieves a list of currencies that an account can send or receive, based on its trust lines.
         (This is not a thoroughly confirmed list, but it can be used to populate user interfaces.)
@@ -110,7 +114,9 @@ class RippleRPCClient(object):
         )
         return self._call('account_currencies', params)
 
-    def account_objects(self, account: str, ledger_index: str="validated", limit: int=10, type: str="state") -> dict:
+    def account_objects(
+            self, account: str, ledger_index: str = "validated", limit: int = 10,
+            type: str = "state") ->dict:
         """
         Method returns the raw ledger format for all objects owned by an account.
         For a higher-level view of an account's trust lines and balances, see the account_lines method instead.
@@ -132,8 +138,9 @@ class RippleRPCClient(object):
         """
         return self._call('account_offers', params=dict(account=account))
 
-    def account_tx(self, account: str, binary: bool=False, forward: bool=False,
-                   ledger_index_max: int=-1, ledger_index_min: int=-1, limit: int=0) -> dict:
+    def account_tx(self, account: str, binary: bool = False, forward: bool = False,
+                   ledger_index_max: int = -1, ledger_index_min: int = -1,
+                   limit: int = 0) ->dict:
         """
         Method retrieves a list of transactions that involved the specified account.
         Reference: https://developers.ripple.com/account_tx.html
@@ -148,8 +155,9 @@ class RippleRPCClient(object):
         )
         return self._call('account_tx', params)
 
-    def gateway_balances(self, account: str, hotwallet: list=None,
-                         ledger_index: str="validated", strict: bool=True) -> dict:
+    def gateway_balances(
+            self, account: str, hotwallet: list = None,
+            ledger_index: str = "validated", strict: bool = True) ->dict:
         """
         Method calculates the total balances issued by a given account, optionally excluding amounts held by
         operational addresses.
@@ -164,8 +172,9 @@ class RippleRPCClient(object):
         )
         return self._call('gateway_balances', params)
 
-    def noripple_check(self, account: str, ledger_index: str='current', limit: int=2,
-                       role: str="gateway", transactions: bool=True) -> dict:
+    def noripple_check(
+            self, account: str, ledger_index: str = 'current', limit: int = 2,
+            role: str = "gateway", transactions: bool = True) ->dict:
         """
         Method provides a quick way to check the status of the DefaultRipple field for an account and
         the NoRipple flag of its trust lines, compared with the recommended settings.
@@ -180,8 +189,10 @@ class RippleRPCClient(object):
         )
         return self._call('noripple_check', params)
 
-    def ledger(self, ledger_index: str='validated', accounts: bool=False, full: bool=False,
-               transactions: bool=False, expand: bool=False, owner_funds: bool=False) -> dict:
+    def ledger(
+            self, ledger_index: str = 'validated', accounts: bool = False,
+            full: bool = False, transactions: bool = False, expand: bool = False,
+            owner_funds: bool = False) ->dict:
         """
         Retrieve information about the public ledger.
         Reference: https://developers.ripple.com/ledger.html
@@ -212,7 +223,8 @@ class RippleRPCClient(object):
         """
         return self._call('ledger_current', params=dict())
 
-    def ledger_data(self, ledger_hash: str, binary: bool=True, limit: int=5) -> dict:
+    def ledger_data(self, ledger_hash: str, binary: bool = True,
+                    limit: int = 5) -> dict:
         """
         Method retrieves contents of the specified ledger. You can iterate through several calls to retrieve the entire
         contents of a single ledger version.
@@ -225,7 +237,9 @@ class RippleRPCClient(object):
         )
         return self._call('ledger_data', params)
 
-    def ledger_entry(self, account_root: str, ledger_index: str="validated", type: str="account_root") -> dict:
+    def ledger_entry(
+            self, account_root: str, ledger_index: str = "validated",
+            type: str = "account_root") ->dict:
         """
         Method returns a single ledger object from the XRP Ledger in its raw format.
         See ledger format for information on the different types of objects you can retrieve.
@@ -255,7 +269,9 @@ class RippleRPCClient(object):
         )
         return self._call('sign', params)
 
-    def sign_for(self, account: str, seed: str, key_type: str = "ed25519", tx_json: dict = None) -> dict:
+    def sign_for(
+            self, account: str, seed: str, key_type: str = "ed25519",
+            tx_json: dict = None) ->dict:
         """
         Method provides one signature for a multi-signed transaction.
         Reference: https://developers.ripple.com/sign_for.html
@@ -301,7 +317,7 @@ class RippleRPCClient(object):
         )
         return self._call('transaction_entry', params)
 
-    def tx(self, tx: str, binary: bool=False) -> dict:
+    def tx(self, tx: str, binary: bool = False) -> dict:
         """
         Method retrieves information on a single transaction
         Reference: https://developers.ripple.com/tx.html
@@ -312,7 +328,7 @@ class RippleRPCClient(object):
         )
         return self._call('tx', params)
 
-    def tx_history(self, start: int=0) -> dict:
+    def tx_history(self, start: int = 0) -> dict:
         """
         Method retrieves some of the most recent transactions made.
         This method is deprecated, and may be removed without further notice.
@@ -321,7 +337,8 @@ class RippleRPCClient(object):
         return self._call('tx_history', params=dict(start=start))
 
     def book_offers(self, taker: str, issuer: str,
-                    taker_gets_currency: str="XRP", taker_pays_currency: str="USD", limit: int=10) -> dict:
+                    taker_gets_currency: str = "XRP",
+                    taker_pays_currency: str = "USD", limit: int = 10) ->dict:
         """
         Method retrieves a list of offers, also known as the order book, between two currencies.
         If the results are very large, a partial result is returned with a marker so that later requests
@@ -341,8 +358,9 @@ class RippleRPCClient(object):
         )
         return self._call('book_offers', params)
 
-    def ripple_path_find(self, destination_account: str, currency: str, issuer: str, value: str, source_account: str,
-                         source_currencies: list=None) -> dict:
+    def ripple_path_find(self, destination_account: str, currency: str,
+                         issuer: str, value: str, source_account: str,
+                         source_currencies: list = None) ->dict:
         """
         The ripple_path_find method is a simplified version of the path_find method that provides
         a single response with a payment path you can use right away. It is available in both the WebSocket
@@ -355,16 +373,14 @@ class RippleRPCClient(object):
         params = dict(
             destination_account=destination_account,
             destination_amount=dict(
-                currency=currency,
-                issuer=issuer,
-                value=value
-            ),
+                currency=currency, issuer=issuer, value=value),
             source_account=source_account,
-            source_currencies=[dict(currency=currency) for currency in source_currencies]
-        )
+            source_currencies=[dict(currency=currency)
+                               for currency in source_currencies])
         return self._call('ripple_path_find', params)
 
-    def channel_authorize(self, channel_id: str, secret: str, amount: str) -> dict:
+    def channel_authorize(self, channel_id: str,
+                          secret: str, amount: str) -> dict:
         """
         Method creates a signature that can be used to redeem a specific amount of XRP from a payment channel.
         Reference: https://developers.ripple.com/channel_authorize.html
@@ -377,7 +393,8 @@ class RippleRPCClient(object):
         )
         return self._call('channel_authorize', params)
 
-    def channel_verify(self, channel_id: str, signature: str, public_key: str, amount: str) -> dict:
+    def channel_verify(self, channel_id: str, signature: str,
+                       public_key: str, amount: str) -> dict:
         """
         Method checks the validity of a signature that can be used to redeem a specific amount of XRP
         from a payment channel.
@@ -465,7 +482,7 @@ class RippleRPCClient(object):
         """
         return self._call('can_delete', params=dict(can_delete=can_delete))
 
-    def connect(self, ip: str, port: int=6561) -> dict:
+    def connect(self, ip: str, port: int = 6561) -> dict:
         """
         Method forces the rippled server to connect to a specific peer rippled server.
         This request is an admin method that cannot be run by unprivileged users!
