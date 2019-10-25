@@ -1,9 +1,10 @@
 import json
 from urllib.request import Request, urlopen
+from urllib.parse import urljoin
 
 
 class RippleDataAPIClient(object):
-    def __init__(self, node: str='https://data.ripple.com'):
+    def __init__(self, node: str = 'https://data.ripple.com'):
         self.node = node
 
     def __repr__(self):
@@ -16,9 +17,10 @@ class RippleDataAPIClient(object):
         :param params: query params
         :return: response dict
         """
-        api_version = '/v2/'
-        endpoint = '/'.join(url_params)
-        url = self.node + api_version + endpoint
+        api_version = "/v2/"
+        endpoint = "/".join(url_params)
+        api_url = "".join((api_version, endpoint))
+        url = urljoin(self.node, api_url)
         data = json.dumps(params).encode('utf-8')
         req = Request(method='GET', url=url, data=data)
         try:
@@ -45,7 +47,8 @@ class RippleDataAPIClient(object):
         endpoint = 'ledgers', ledger_hash, 'validations'
         return self._call(endpoint, query_params)
 
-    def get_ledger_validation(self, ledger_hash: str, pubkey: str, **query_params) -> dict:
+    def get_ledger_validation(self, ledger_hash: str,
+                              pubkey: str, **query_params) -> dict:
         """
         Retrieve a validation vote recorded for a specific ledger hash by a specific validator.
         This dataset includes ledger versions that are outside the validated ledger chain
@@ -69,7 +72,7 @@ class RippleDataAPIClient(object):
         """
         return self._call(('transactions', ), query_params)
 
-    def get_payments(self, currency: str=None, **query_params) -> dict:
+    def get_payments(self, currency: str = None, **query_params) -> dict:
         """
         Retrieve Payments over time, where Payments are defined as Payment type transactions where the sender
         of the transaction is not also the destination.
@@ -89,12 +92,13 @@ class RippleDataAPIClient(object):
         url_params = 'exchanges', base, counter
         return self._call(url_params, query_params)
 
-    def get_exchange_rates(self, base: str, counter: str, **query_params) -> dict:
+    def get_exchange_rates(self, base: str, counter: str,
+                           **query_params) -> dict:
         """
         Retrieve an exchange rate for a given currency pair at a specific time.
         Reference: https://developers.ripple.com/data-api.html#get-exchange-rates
         """
-        url_params =  'exchange_rates', base, counter
+        url_params = 'exchange_rates', base, counter
         return self._call(url_params, query_params)
 
     def normalize(self, **query_params) -> dict:
@@ -104,7 +108,7 @@ class RippleDataAPIClient(object):
         """
         return self._call(('normalize', ), query_params)
 
-    def get_daily_reports(self, date: str=None, **query_params) -> dict:
+    def get_daily_reports(self, date: str = None, **query_params) -> dict:
         """
         Retrieve per account per day aggregated payment summaries
         Refernce: https://developers.ripple.com/data-api.html#get-daily-reports
@@ -121,7 +125,8 @@ class RippleDataAPIClient(object):
         """
         return self._call(('stats', ), query_params)
 
-    def get_active_accounts(self, base: str, counter: str, **query_params) -> dict:
+    def get_active_accounts(self, base: str, counter: str,
+                            **query_params) -> dict:
         """
         Get information on which accounts are actively trading in a specific currency pair.
         Reference: https://developers.ripple.com/data-api.html#get-active-accounts
@@ -169,7 +174,7 @@ class RippleDataAPIClient(object):
         url_params = 'network', 'xrp_distribution'
         return self._call(url_params, query_params)
 
-    def get_top_currencies(self, date: str=None, **query_params) -> dict:
+    def get_top_currencies(self, date: str = None, **query_params) -> dict:
         """
         Returns the top currencies on the XRP Ledger, ordered from highest rank to lowest.
         Reference: https://developers.ripple.com/data-api.html#get-top-currencies
@@ -179,7 +184,7 @@ class RippleDataAPIClient(object):
             url_params = 'network', 'top_currencies', date
         return self._call(url_params, query_params)
 
-    def get_top_markets(self, date: str=None, **query_params) -> dict:
+    def get_top_markets(self, date: str = None, **query_params) -> dict:
         """
         Returns the top exchange markets on the XRP Ledger, ordered from highest rank to lowest.
         Reference: https://developers.ripple.com/data-api.html#get-top-markets
@@ -272,7 +277,8 @@ class RippleDataAPIClient(object):
         url_params = 'network', 'validations'
         return self._call(url_params, query_params)
 
-    def get_single_validator_reports(self, pubkey: str, **query_params) -> dict:
+    def get_single_validator_reports(
+            self, pubkey: str, **query_params) -> dict:
         """
         Get a single validator's validation vote stats for 24-hour intervals.
         Reference: https://developers.ripple.com/data-api.html#get-single-validator-reports
@@ -351,7 +357,8 @@ class RippleDataAPIClient(object):
         url_params = 'accounts', address, 'orders'
         return self._call(url_params, query_params)
 
-    def get_account_transaction_history(self, address: str, **query_params) -> dict:
+    def get_account_transaction_history(
+            self, address: str, **query_params) -> dict:
         """
         Retrieve a history of transactions that affected a specific account.
         This includes all transactions the account sent, payments the account received,
@@ -361,7 +368,8 @@ class RippleDataAPIClient(object):
         url_params = 'accounts', address, 'transactions'
         return self._call(url_params, query_params)
 
-    def get_transaction_by_account_and_sequence(self, address: str, sequence: str, **query_params) -> dict:
+    def get_transaction_by_account_and_sequence(
+            self, address: str, sequence: str, **query_params) -> dict:
         """
         Retrieve a specifc transaction originating from a specified account
         Reference: https://developers.ripple.com/data-api.html#get-transaction-by-account-and-sequence
@@ -377,7 +385,9 @@ class RippleDataAPIClient(object):
         url_params = 'accounts', address, 'payments'
         return self._call(url_params, query_params)
 
-    def get_account_exchanges(self, address: str, base: str=None, counter: str=None, **query_params) -> dict:
+    def get_account_exchanges(
+            self, address: str, base: str = None, counter: str = None, **
+            query_params) ->dict:
         """
         Retrieve Exchanges for a given account over time.
         Reference: https://developers.ripple.com/data-api.html#get-account-exchanges
@@ -387,7 +397,8 @@ class RippleDataAPIClient(object):
             url_params = 'accounts', address, 'exchanges', base, counter
         return self._call(url_params, query_params)
 
-    def get_account_balance_changes(self, address: str, **query_params) -> dict:
+    def get_account_balance_changes(
+            self, address: str, **query_params) -> dict:
         """
         Retrieve Balance changes for a given account over time.
         Reference: https://developers.ripple.com/data-api.html#get-account-balance-changes
@@ -395,7 +406,8 @@ class RippleDataAPIClient(object):
         url_params = 'accounts', address, 'balance_changes'
         return self._call(url_params, query_params)
 
-    def get_account_reports(self, address: str, date: str=None, **query_params) -> dict:
+    def get_account_reports(
+            self, address: str, date: str = None, **query_params) -> dict:
         """
         Retrieve daily summaries of payment activity for an account.
         Reference: https://developers.ripple.com/data-api.html#get-account-reports
@@ -405,7 +417,8 @@ class RippleDataAPIClient(object):
             url_params = 'accounts', address, 'reports', date
         return self._call(url_params, query_params)
 
-    def get_account_transaction_stats(self, address: str, **query_params) -> dict:
+    def get_account_transaction_stats(
+            self, address: str, **query_params) -> dict:
         """
         Retrieve daily summaries of transaction activity for an account.
         Reference: https://developers.ripple.com/data-api.html#get-account-transaction-stats
