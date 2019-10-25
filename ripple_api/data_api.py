@@ -1,6 +1,7 @@
 import json
 from urllib.request import Request, urlopen
 from urllib.parse import urljoin
+from urllib.error import HTTPError, URLError
 
 
 class RippleDataAPIClient(object):
@@ -27,8 +28,10 @@ class RippleDataAPIClient(object):
             with urlopen(req) as res:
                 res_json = json.loads(res.fp.read().decode('utf-8'))
                 return res_json
-        except Exception as err:
-            return {"status": "error", "error": err}
+        except HTTPError as err:
+            return {"status": "error", "msg": err}
+        except URLError as err:
+            return {"status": "error", "msg": err}
 
     def get_ledger(self, ledger_identifier: str, **query_params) -> dict:
         """
