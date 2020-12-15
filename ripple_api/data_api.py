@@ -116,7 +116,7 @@ class RippleDataAPIClient(object):
         Retrieve per account per day aggregated payment summaries
         Refernce: https://developers.ripple.com/data-api.html#get-daily-reports
         """
-        url_params = 'reports'
+        url_params = ('reports', )
         if date:
             url_params = 'reports', date
         return self._call(url_params, query_params)
