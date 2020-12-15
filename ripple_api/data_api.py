@@ -81,7 +81,7 @@ class RippleDataAPIClient(object):
         of the transaction is not also the destination.
         Reference: https://developers.ripple.com/data-api.html#get-payments
         """
-        url_params = 'payments'
+        url_params = ('payments', )
         if currency:
             url_params = 'payments', currency
         return self._call(url_params, query_params)
