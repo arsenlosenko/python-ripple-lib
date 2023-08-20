@@ -7,6 +7,8 @@ python-ripple-lib
 | `xrpl-py on PyPI <https://pypi.org/project/xrpl-py/>`_
 | 
 
+**Repository will be archived on 20.08.2023**, please consider xrpl-py library linked above.
+
 | python-ripple-lib is a client library to access Ripple `rippled API <https://developers.ripple.com/rippled-api.html>`_ and `Data API <https://developers.ripple.com/data-api.html>`_.
 | Currently it supports public and admin methods (some of them still are work in progress though). List of implemented methods is displayed below. Basically, it's just a wrapper on top of http requests made to API.
 
